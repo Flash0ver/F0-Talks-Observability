@@ -1,6 +1,3 @@
-using System.Diagnostics;
-using System.Text.Json;
-
 namespace F0.Talks.Observability.Maui.App.Net;
 
 public sealed class NuGetClient

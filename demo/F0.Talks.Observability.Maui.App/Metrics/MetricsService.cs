@@ -1,6 +1,3 @@
-using System.Diagnostics;
-using System.Diagnostics.Metrics;
-
 namespace F0.Talks.Observability.Maui.App.Metrics;
 
 internal sealed class MetricsService : IMauiInitializeService, IDisposable

@@ -1,5 +1,3 @@
-using System.Diagnostics.Metrics;
-
 namespace F0.Talks.Observability.Maui.App.Metrics;
 
 public interface IMetrics
