@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Diagnostics.Metrics;
 
 namespace F0.Talks.Observability.Maui.App.Metrics;
@@ -33,36 +34,54 @@ internal sealed class MetricsService : IMauiInitializeService, IDisposable
 
 	private void OnMeasurementRecorded<T>(Instrument instrument, T measurement, ReadOnlySpan<KeyValuePair<string, object?>> tags, object? state) where T : struct
 	{
-		IEnumerable<KeyValuePair<string, object?>> attributes = [];
+		TagList attributes = [];
 
 		if (instrument.Meter.Tags is not null)
 		{
-			attributes = attributes.Concat(instrument.Meter.Tags);
+			foreach (KeyValuePair<string, object?> tag in instrument.Meter.Tags)
+			{
+				if (tag.Value is not null)
+				{
+					attributes.Add(tag);
+				}
+			}
 		}
 
 		if (instrument.Tags is not null)
 		{
-			attributes = attributes.Concat(instrument.Tags);
+			foreach (KeyValuePair<string, object?> tag in instrument.Tags)
+			{
+				if (tag.Value is not null)
+				{
+					attributes.Add(tag);
+				}
+			}
 		}
 
 		if (!tags.IsEmpty)
 		{
-			attributes = attributes.Concat(tags.ToArray());
+			foreach (KeyValuePair<string, object?> tag in tags)
+			{
+				if (tag.Value is not null)
+				{
+					attributes.Add(tag);
+				}
+			}
 		}
-
-		attributes = attributes.Where(static (KeyValuePair<string, object?> attribute) => attribute.Value is not null);
 
 		if (instrument is Counter<T> or ObservableCounter<T>)
 		{
-			SentrySdk.Experimental.Metrics.EmitCounter(instrument.Name, measurement, attributes!);
+			SentrySdk.Experimental.Metrics.EmitCounter(instrument.Name, measurement, attributes);
 		}
 		else if (instrument is Gauge<T> or ObservableGauge<T>)
 		{
-			SentrySdk.Experimental.Metrics.EmitGauge(instrument.Name, measurement, null, attributes!);
+			MeasurementUnit unit = instrument.Unit is not null ? MeasurementUnit.Custom(instrument.Unit) : MeasurementUnit.None;
+			SentrySdk.Experimental.Metrics.EmitGauge(instrument.Name, measurement, unit, attributes);
 		}
 		else if (instrument is Histogram<T>)
 		{
-			SentrySdk.Experimental.Metrics.EmitDistribution(instrument.Name, measurement, null, attributes!);
+			MeasurementUnit unit = instrument.Unit is not null ? MeasurementUnit.Custom(instrument.Unit) : MeasurementUnit.None;
+			SentrySdk.Experimental.Metrics.EmitDistribution(instrument.Name, measurement, unit, attributes);
 		}
 		else
 		{

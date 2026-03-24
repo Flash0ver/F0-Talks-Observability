@@ -6,7 +6,7 @@ public partial class MainPage : ContentPage
 	private readonly ILogger<MainPage> _logger;
 	private readonly IMetrics _metrics;
 
-	int count = 0;
+	private int _count = 0;
 
 	public MainPage(NuGetClient nuget, ILogger<MainPage> logger, IMetrics metrics)
 	{
@@ -19,16 +19,16 @@ public partial class MainPage : ContentPage
 
 	private void OnCounterClicked(object? sender, EventArgs e)
 	{
-		count++;
+		_count++;
 
-		if (count == 1)
-			CounterBtn.Text = $"Clicked {count} time";
+		if (_count == 1)
+			CounterBtn.Text = $"Clicked {_count} time";
 		else
-			CounterBtn.Text = $"Clicked {count} times";
+			CounterBtn.Text = $"Clicked {_count} times";
 
 		SemanticScreenReader.Announce(CounterBtn.Text);
 
-		_logger.ClickedButton(count);
+		_logger.ClickedButton(_count);
 		_metrics.ButtonClicked();
 	}
 
