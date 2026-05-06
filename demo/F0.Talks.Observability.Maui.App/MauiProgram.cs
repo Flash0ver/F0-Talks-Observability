@@ -21,7 +21,7 @@ public static class MauiProgram
 				options.SampleRate = 1.0f;
 				options.TracesSampleRate = 1.0d;
 				options.EnableLogs = true;
-				options.Experimental.EnableMetrics = true;
+				options.EnableMetrics = true;
 
 				options.Native.ExperimentalOptions.SessionReplay.OnErrorSampleRate = 1.0;
 				options.Native.ExperimentalOptions.SessionReplay.SessionSampleRate = 1.0;

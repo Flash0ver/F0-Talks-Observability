@@ -70,8 +70,8 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
 		<PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.15.0" />
 		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.15.0" />
-		<PackageReference Include="Sentry.Maui" Version="6.2.0" />
-		<PackageReference Include="Sentry.OpenTelemetry" Version="6.2.0" />
+		<PackageReference Include="Sentry.Maui" Version="6.5.0" />
+		<PackageReference Include="Sentry.OpenTelemetry" Version="6.5.0" />
 	</ItemGroup>
 
 </Project>

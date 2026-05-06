@@ -68,17 +68,17 @@ internal sealed class MetricsService : IMauiInitializeService, IDisposable
 
 		if (instrument is Counter<T> or ObservableCounter<T>)
 		{
-			SentrySdk.Experimental.Metrics.EmitCounter(instrument.Name, measurement, attributes);
+			SentrySdk.Metrics.EmitCounter(instrument.Name, measurement, attributes);
 		}
 		else if (instrument is Gauge<T> or ObservableGauge<T>)
 		{
 			MeasurementUnit unit = instrument.Unit is not null ? MeasurementUnit.Custom(instrument.Unit) : MeasurementUnit.None;
-			SentrySdk.Experimental.Metrics.EmitGauge(instrument.Name, measurement, unit, attributes);
+			SentrySdk.Metrics.EmitGauge(instrument.Name, measurement, unit, attributes);
 		}
 		else if (instrument is Histogram<T>)
 		{
 			MeasurementUnit unit = instrument.Unit is not null ? MeasurementUnit.Custom(instrument.Unit) : MeasurementUnit.None;
-			SentrySdk.Experimental.Metrics.EmitDistribution(instrument.Name, measurement, unit, attributes);
+			SentrySdk.Metrics.EmitDistribution(instrument.Name, measurement, unit, attributes);
 		}
 		else
 		{
