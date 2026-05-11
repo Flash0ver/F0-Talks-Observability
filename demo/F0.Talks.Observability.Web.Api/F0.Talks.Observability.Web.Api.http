@@ -1,0 +1,16 @@
+@HostAddress = http://localhost:5144
+
+GET {{HostAddress}}//openapi/v1.json
+Accept: application/json
+
+###
+
+GET {{HostAddress}}/api/todos/
+Accept: application/json
+
+###
+
+GET {{HostAddress}}/api/todos/1
+Accept: application/json
+
+###

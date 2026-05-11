@@ -17,7 +17,7 @@ internal sealed class MetricsService : IMauiInitializeService, IDisposable
 				listener.EnableMeasurementEvents(instrument);
 			}
 
-			if (instrument.Meter.Name is "MobileHeads")
+			if (instrument.Meter.Name is "F0.Talks.Observability")
 			{
 				listener.EnableMeasurementEvents(instrument);
 			}

@@ -27,7 +27,7 @@ public static class MauiProgram
 				options.Native.ExperimentalOptions.SessionReplay.SessionSampleRate = 1.0;
 				options.Native.ExperimentalOptions.SessionReplay.MaskAllImages = true;
 				options.Native.ExperimentalOptions.SessionReplay.MaskAllText = true;
-				
+
 				options.UseOpenTelemetry();
 			})
 			.ConfigureFonts(fonts =>
@@ -47,9 +47,13 @@ public static class MauiProgram
 		builder.Services.AddSingleton<IMetrics, AppMetrics>();
 		builder.Services.AddTransient<IMauiInitializeService, MetricsService>();
 
+		builder.Services.AddSingleton<ITracer, AppTracer>();
 		builder.Services.AddTransient<IMauiInitializeService, TracerService>();
 
-		builder.Services.AddHttpClient<NuGetClient>();
+		builder.Services.AddHttpClient<NuGetClient>()
+			.AddHttpMessageHandler(static () => new SentryHttpMessageHandler());
+		builder.Services.AddHttpClient<WebApiClient>()
+			.AddHttpMessageHandler(static () => new SentryHttpMessageHandler());
 
 		builder.Services.AddOpenTelemetry()
 			.ConfigureResource(resource => resource.AddService(builder.Environment.ApplicationName))

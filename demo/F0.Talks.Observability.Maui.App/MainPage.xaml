@@ -39,6 +39,13 @@
                 HorizontalOptions="Fill" />
 
             <Button
+                x:Name="WebApiBtn"
+                Text="Web API"
+                SemanticProperties.Hint="Fetches a TODO item"
+                Clicked="OnWebApiClicked"
+                HorizontalOptions="Fill" />
+
+            <Button
                 x:Name="CrashBtn"
                 Text="Crash"
                 SemanticProperties.Hint="Crashing.."

@@ -12,7 +12,7 @@ internal sealed class TracerService : IMauiInitializeService, IDisposable
 	public void Initialize(IServiceProvider services)
 	{
 		_tracerProvider = Sdk.CreateTracerProviderBuilder()
-			.AddSource("Microsoft.Maui", "MobileHeads.NuGet")
+			.AddSource("Microsoft.Maui", "F0.Talks.Observability")
 			.AddSentry()
 			.Build();
 	}
