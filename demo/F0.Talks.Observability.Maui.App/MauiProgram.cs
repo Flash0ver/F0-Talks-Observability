@@ -1,4 +1,5 @@
-﻿using OpenTelemetry.Logs;
+﻿using OpenTelemetry.Exporter;
+using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -56,19 +57,19 @@ public static class MauiProgram
 			.AddHttpMessageHandler(static () => new SentryHttpMessageHandler());
 
 		builder.Services.AddOpenTelemetry()
-			.ConfigureResource(resource => resource.AddService(builder.Environment.ApplicationName))
-			.WithLogging(logging =>
+			.ConfigureResource((ResourceBuilder resource) => resource.AddService(builder.Environment.ApplicationName))
+			.WithLogging(static (LoggerProviderBuilder logging) =>
 			{
 				logging.AddConsoleExporter();
 			})
-			.WithMetrics(metrics =>
+			.WithMetrics(static (MeterProviderBuilder metrics) =>
 			{
-				metrics.AddConsoleExporter((exporterOptions, metricReaderOptions) =>
+				metrics.AddConsoleExporter(static (ConsoleExporterOptions exporterOptions, MetricReaderOptions metricReaderOptions) =>
 				{
-					metricReaderOptions.PeriodicExportingMetricReaderOptions.ExportIntervalMilliseconds = 1000;
+					metricReaderOptions.PeriodicExportingMetricReaderOptions.ExportIntervalMilliseconds = 1_000;
 				});
 			})
-			.WithTracing(tracing =>
+			.WithTracing(static (TracerProviderBuilder tracing) =>
 			{
 				tracing.AddConsoleExporter();
 			});

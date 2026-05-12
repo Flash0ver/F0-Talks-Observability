@@ -99,7 +99,7 @@ internal sealed class MetricsService : BackgroundService
 
 	private void OnUnsupportedMeasurementRecorded<T>(Instrument instrument, T measurement, ReadOnlySpan<KeyValuePair<string, object?>> tags, object? state) where T : struct
 	{
-		_logger.MeasurementTypeNotSupported(instrument.GetType());
+		_logger.MeasurementTypeNotSupported(typeof(T));
 	}
 
 	public override void Dispose()
@@ -114,8 +114,9 @@ file static class SentryMeasurementUnitExtensions
 {
 	extension(MeasurementUnit)
 	{
-		/// <seealso href="https://ucum.org/ucum"/>
-		/// <seealso href="https://learn.microsoft.com/dotnet/core/diagnostics/built-in-metrics"/>
+		/// <seealso href="https://ucum.org/ucum">The Unified Code for Units of Measure</seealso>
+		/// <seealso href="https://learn.microsoft.com/dotnet/core/diagnostics/built-in-metrics">Built-in metrics in .NET</seealso>
+		/// <seealso href="https://develop.sentry.dev/sdk/foundations/state-management/scopes/attributes/#units">Sentry Units</seealso>
 		public static MeasurementUnit From(string? unit, ILogger logger)
 		{
 			return unit switch
