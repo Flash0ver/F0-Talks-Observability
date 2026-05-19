@@ -85,21 +85,21 @@ internal sealed class MetricsService : BackgroundService
 		}
 		else if (instrument is Gauge<T> or ObservableGauge<T>)
 		{
-			SentrySdk.Metrics.EmitGauge(instrument.Name, measurement, MeasurementUnit.From(instrument.Unit, _logger), attributes);
+			SentrySdk.Metrics.EmitGauge(instrument.Name, measurement, MeasurementUnit.From(instrument, _logger), attributes);
 		}
 		else if (instrument is Histogram<T>)
 		{
-			SentrySdk.Metrics.EmitDistribution(instrument.Name, measurement, MeasurementUnit.From(instrument.Unit, _logger), attributes);
+			SentrySdk.Metrics.EmitDistribution(instrument.Name, measurement, MeasurementUnit.From(instrument, _logger), attributes);
 		}
 		else
 		{
-			_logger.InstrumentTypeNotSupported(instrument.GetType());
+			_logger.InstrumentTypeNotSupported(instrument);
 		}
 	}
 
 	private void OnUnsupportedMeasurementRecorded<T>(Instrument instrument, T measurement, ReadOnlySpan<KeyValuePair<string, object?>> tags, object? state) where T : struct
 	{
-		_logger.MeasurementTypeNotSupported(typeof(T));
+		_logger.MeasurementTypeNotSupported<T>(instrument);
 	}
 
 	public override void Dispose()
@@ -117,19 +117,21 @@ file static class SentryMeasurementUnitExtensions
 		/// <seealso href="https://ucum.org/ucum">The Unified Code for Units of Measure</seealso>
 		/// <seealso href="https://learn.microsoft.com/dotnet/core/diagnostics/built-in-metrics">Built-in metrics in .NET</seealso>
 		/// <seealso href="https://develop.sentry.dev/sdk/foundations/state-management/scopes/attributes/#units">Sentry Units</seealso>
-		public static MeasurementUnit From(string? unit, ILogger logger)
+		public static MeasurementUnit From(Instrument instrument, ILogger logger)
 		{
+			string? unit = instrument.Unit;
 			return unit switch
 			{
 				"s" => MeasurementUnit.Duration.Second,
+				"ms" => MeasurementUnit.Duration.Millisecond,
 				"By" => MeasurementUnit.Information.Byte,
 				null => default(MeasurementUnit),
-				_ => Default(unit, logger),
+				_ => Default(unit, instrument, logger),
 			};
 
-			static MeasurementUnit Default(string unit, ILogger logger)
+			static MeasurementUnit Default(string unit, Instrument instrument, ILogger logger)
 			{
-				logger.InstrumentUnitNotSupported(unit);
+				logger.InstrumentUnitNotSupported(unit, instrument);
 				return MeasurementUnit.None;
 			}
 		}

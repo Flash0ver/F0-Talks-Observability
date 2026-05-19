@@ -82,7 +82,7 @@ internal sealed class MetricsService : IMauiInitializeService, IDisposable
 		}
 		else
 		{
-			_logger.InstrumentTypeNotSupported(instrument.GetType());
+			_logger.InstrumentTypeNotSupported(instrument);
 		}
 	}
 
