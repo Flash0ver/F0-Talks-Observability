@@ -1,0 +1,8 @@
+is_global = true
+
+# https://learn.microsoft.com/dotnet/core/testing/mstest-analyzers/overview
+dotnet_diagnostic.MSTEST0015.severity = warning
+dotnet_diagnostic.MSTEST0019.severity = none
+dotnet_diagnostic.MSTEST0020.severity = warning
+dotnet_diagnostic.MSTEST0021.severity = warning
+dotnet_diagnostic.MSTEST0022.severity = none
