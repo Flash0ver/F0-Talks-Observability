@@ -17,6 +17,12 @@ internal static partial class Log
 	[LoggerMessage(2_000, LogLevel.Information, "{Method} Request: {Route}")]
 	internal static partial void Request(this ILogger logger, string method, string route);
 
+	[LoggerMessage(3_000, LogLevel.Information, "Database Created.")]
+	internal static partial void DatabaseCreated(this ILogger logger);
+
+	[LoggerMessage(3_001, LogLevel.Information, "Database Deleted.")]
+	internal static partial void DatabaseDeleted(this ILogger logger);
+
 	extension(ILogger logger)
 	{
 		internal void InstrumentTypeNotSupported(Instrument instrument)

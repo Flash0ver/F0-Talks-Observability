@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using F0.Talks.Observability.Data.TaskList;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Sentry.AspNetCore;
@@ -22,7 +23,10 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 
 builder.Services.AddOpenApi();
 
+builder.Services.AddSingleton<TaskListContextFactory>();
+
 builder.Services.AddHostedService<MetricsService>();
+builder.Services.AddHostedService<DatabaseService>();
 
 WebApplication app = builder.Build();
 
@@ -31,41 +35,32 @@ if (app.Environment.IsDevelopment())
 	app.MapOpenApi();
 }
 
-Todo[] sampleTodos =
-[
-	new(1, "Walk the dog"),
-	new(2, "Do the dishes", DateOnly.FromDateTime(DateTime.Now)),
-	new(3, "Do the laundry", DateOnly.FromDateTime(DateTime.Now.AddDays(1))),
-	new(4, "Clean the bathroom"),
-	new(5, "Clean the car", DateOnly.FromDateTime(DateTime.Now.AddDays(2))),
-];
-
 var todosApi = app.MapGroup("/api/todos");
-todosApi.MapGet("/", async Task<Todo[]> (HttpRequest request) =>
+todosApi.MapGet("/", async Task<Todo[]> (HttpRequest request, [FromServices] TaskListContextFactory dbFactory) =>
 	{
 		await Tracer.WaitAsync();
 
 		app.Logger.Request(request);
 
-		return sampleTodos;
+		await using TaskListContext dbContext = dbFactory.CreateDbContext();
+		return await dbContext.All().Select(TodoExtensions.FromDataEntity).ToArrayAsync(request.HttpContext.RequestAborted);
 	})
 	.WithName("GetTodos");
 
-todosApi.MapGet("/{id}", async Task<Results<Ok<Todo>, NotFound>> (HttpRequest request, [FromRoute] int id) =>
+todosApi.MapGet("/{id}", async Task<Results<Ok<Todo>, NotFound>> (HttpRequest request, [FromRoute] int id, [FromServices] TaskListContextFactory dbFactory) =>
 	{
 		await Tracer.WaitAsync();
 
 		app.Logger.Request(request);
 
-		return sampleTodos.FirstOrDefault(a => a.Id == id) is { } todo
-			? TypedResults.Ok(todo)
+		await using TaskListContext dbContext = dbFactory.CreateDbContext();
+		return await dbContext.FindByIdAsync(id, request.HttpContext.RequestAborted) is { } todo
+			? TypedResults.Ok(Todo.FromDataEntity(todo))
 			: TypedResults.NotFound();
 	})
 	.WithName("GetTodoById");
 
 app.Run();
-
-public sealed record class Todo(int Id, string? Title, DateOnly? DueBy = null, bool IsComplete = false);
 
 [JsonSerializable(typeof(Todo[]))]
 internal sealed partial class AppJsonSerializerContext : JsonSerializerContext;

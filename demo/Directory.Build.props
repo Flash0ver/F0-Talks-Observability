@@ -1,6 +1,13 @@
 <Project>
 
   <PropertyGroup>
+    <IsTrimmable>false</IsTrimmable>
+    <VerifyReferenceTrimCompatibility>true</VerifyReferenceTrimCompatibility>
+    <IsAotCompatible>false</IsAotCompatible>
+    <VerifyReferenceAotCompatibility>true</VerifyReferenceAotCompatibility>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <ValidateXcodeVersion>false</ValidateXcodeVersion>
   </PropertyGroup>
 

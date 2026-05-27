@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="F0.Talks.Observability.Benchmarks/F0.Talks.Observability.Benchmarks.csproj" />
+  <Project Path="F0.Talks.Observability.Data/F0.Talks.Observability.Data.csproj" />
   <Project Path="F0.Talks.Observability.Maui.App/F0.Talks.Observability.Maui.App.csproj" />
   <Project Path="F0.Talks.Observability.Tests/F0.Talks.Observability.Tests.csproj" />
   <Project Path="F0.Talks.Observability.Web.Api/F0.Talks.Observability.Web.Api.csproj" />
