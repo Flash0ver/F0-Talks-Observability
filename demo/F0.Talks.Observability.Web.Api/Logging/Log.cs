@@ -11,6 +11,9 @@ internal static partial class Log
 	[LoggerMessage(1_002, LogLevel.Error, "Measurement type {Measurement} not supported (Instrument: {Instrument}, Meter: {Meter})")]
 	internal static partial void MeasurementTypeNotSupported(this ILogger logger, Type measurement, string instrument, string meter);
 
+	[LoggerMessage(1_003, LogLevel.Warning, "Exporting observable instruments exceeded time allotted (Timeout: {Timeout}, Elapsed: {Elapsed})")]
+	internal static partial void ExportObservableInstrumentsTimeout(this ILogger logger, TimeSpan timeout, TimeSpan elapsed);
+
 	[LoggerMessage(2_000, LogLevel.Information, "{Method} Request: {Route}")]
 	internal static partial void Request(this ILogger logger, string method, string route);
 

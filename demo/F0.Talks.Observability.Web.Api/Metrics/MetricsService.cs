@@ -1,17 +1,19 @@
 namespace F0.Talks.Observability.Web.Api.Metrics;
 
-internal sealed class MetricsService : BackgroundService
+internal sealed class MetricsService : IHostedService, IDisposable, IAsyncDisposable
 {
 	private readonly MeterListener _listener;
+	private readonly Timer _timer;
 	private readonly ILogger<MetricsService> _logger;
 
 	public MetricsService(ILogger<MetricsService> logger)
 	{
 		_listener = new MeterListener();
+		_timer = new Timer(OnIntervalElapsed);
 		_logger = logger;
 	}
 
-	protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+	Task IHostedService.StartAsync(CancellationToken cancellationToken)
 	{
 		_listener.InstrumentPublished = static (Instrument instrument, MeterListener listener) =>
 		{
@@ -35,11 +37,30 @@ internal sealed class MetricsService : BackgroundService
 
 		_listener.Start();
 
-		using PeriodicTimer timer = new(TimeSpan.FromSeconds(10));
-		while (await timer.WaitForNextTickAsync(stoppingToken))
+		_ = _timer.Change(TimeSpan.Zero, TimeSpan.FromMilliseconds(10_000));
+		return Task.CompletedTask;
+	}
+
+	private void OnIntervalElapsed(object? state)
+	{
+		const int timeout = 1_000;
+
+		Debug.Assert(Object.ReferenceEquals(state, _timer));
+		long timestamp = Stopwatch.GetTimestamp();
+
+		_listener.RecordObservableInstruments();
+
+		TimeSpan elapsed = Stopwatch.GetElapsedTime(timestamp);
+		if (elapsed.TotalMilliseconds > timeout)
 		{
-			_listener.RecordObservableInstruments();
+			_logger.ExportObservableInstrumentsTimeout(TimeSpan.FromMilliseconds(timeout), elapsed);
 		}
+	}
+
+	Task IHostedService.StopAsync(CancellationToken cancellationToken)
+	{
+		_ = _timer.Change(Timeout.Infinite, Timeout.Infinite);
+		return Task.CompletedTask;
 	}
 
 	private void OnMeasurementRecorded<T>(Instrument instrument, T measurement, ReadOnlySpan<KeyValuePair<string, object?>> tags, object? state) where T : struct
@@ -102,10 +123,15 @@ internal sealed class MetricsService : BackgroundService
 		_logger.MeasurementTypeNotSupported<T>(instrument);
 	}
 
-	public override void Dispose()
+	void IDisposable.Dispose()
 	{
-		base.Dispose();
+		_timer.Dispose();
+		_listener.Dispose();
+	}
 
+	async ValueTask IAsyncDisposable.DisposeAsync()
+	{
+		await _timer.DisposeAsync();
 		_listener.Dispose();
 	}
 }
