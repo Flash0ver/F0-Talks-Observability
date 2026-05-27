@@ -10,7 +10,48 @@ Accept: application/json
 
 ###
 
+GET {{HostAddress}}/api/todos/complete
+Accept: application/json
+
+###
+
 GET {{HostAddress}}/api/todos/1
+Accept: application/json
+
+###
+
+POST {{HostAddress}}/api/todos/
+Content-Type: application/json
+
+{
+  "title": "New TODO item",
+  "dueBy": "2026-05-29",
+  "isComplete": false
+}
+
+###
+
+PUT {{HostAddress}}/api/todos/1
+Content-Type: application/json
+
+{
+  "title": "Updated TODO item",
+  "dueBy": "2026-05-29",
+  "isComplete": false
+}
+
+###
+
+PATCH {{HostAddress}}/api/todos/1
+Content-Type: application/json
+
+{
+  "isComplete": true
+}
+
+###
+
+DELETE {{HostAddress}}/api/todos/1
 Accept: application/json
 
 ###

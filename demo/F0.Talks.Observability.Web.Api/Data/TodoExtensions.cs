@@ -1,5 +1,3 @@
-using F0.Talks.Observability.Data.TaskList;
-
 namespace F0.Talks.Observability.Web.Api.Data;
 
 internal static class TodoExtensions
