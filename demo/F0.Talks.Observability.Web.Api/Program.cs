@@ -1,7 +1,5 @@
 using System.Text.Json.Serialization;
-using F0.Talks.Observability.Data.TaskList;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+using F0.Talks.Observability.Web.Api.Routes;
 using Sentry.AspNetCore;
 
 WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(args);
@@ -35,30 +33,7 @@ if (app.Environment.IsDevelopment())
 	app.MapOpenApi();
 }
 
-var todosApi = app.MapGroup("/api/todos");
-todosApi.MapGet("/", async Task<Todo[]> (HttpRequest request, [FromServices] TaskListContextFactory dbFactory) =>
-	{
-		await Tracer.WaitAsync();
-
-		app.Logger.Request(request);
-
-		await using TaskListContext dbContext = dbFactory.CreateDbContext();
-		return await dbContext.All().Select(TodoExtensions.FromDataEntity).ToArrayAsync(request.HttpContext.RequestAborted);
-	})
-	.WithName("GetTodos");
-
-todosApi.MapGet("/{id}", async Task<Results<Ok<Todo>, NotFound>> (HttpRequest request, [FromRoute] int id, [FromServices] TaskListContextFactory dbFactory) =>
-	{
-		await Tracer.WaitAsync();
-
-		app.Logger.Request(request);
-
-		await using TaskListContext dbContext = dbFactory.CreateDbContext();
-		return await dbContext.FindByIdAsync(id, request.HttpContext.RequestAborted) is { } todo
-			? TypedResults.Ok(Todo.FromDataEntity(todo))
-			: TypedResults.NotFound();
-	})
-	.WithName("GetTodoById");
+app.MapRoutes();
 
 app.Run();
 
