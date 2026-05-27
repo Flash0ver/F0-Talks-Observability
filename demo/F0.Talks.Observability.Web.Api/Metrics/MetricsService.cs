@@ -124,8 +124,11 @@ file static class SentryMeasurementUnitExtensions
 			{
 				"s" => MeasurementUnit.Duration.Second,
 				"ms" => MeasurementUnit.Duration.Millisecond,
+				"ns" => MeasurementUnit.Duration.Nanosecond,
 				"By" => MeasurementUnit.Information.Byte,
+				"" => default(MeasurementUnit),
 				null => default(MeasurementUnit),
+				['{', _, .., '}'] => default(MeasurementUnit),
 				_ => Default(unit, instrument, logger),
 			};
 

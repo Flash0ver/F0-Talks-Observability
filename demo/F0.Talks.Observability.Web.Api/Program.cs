@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Sentry.AspNetCore;
 
-var builder = WebApplication.CreateSlimBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(args);
 
 builder.WebHost.UseSentry(static (SentryAspNetCoreOptions options) =>
 {
@@ -24,7 +24,7 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddHostedService<MetricsService>();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
