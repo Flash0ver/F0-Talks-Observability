@@ -37,6 +37,8 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
 
+		builder.AddServiceDefaults();
+
 #if DEBUG
 		builder.Logging.AddDebug();
 #endif
@@ -56,7 +58,7 @@ public static class MauiProgram
 		builder.Services.AddHttpClient<WebApiClient>()
 			.AddHttpMessageHandler(static () => new SentryHttpMessageHandler());
 
-		builder.Services.AddOpenTelemetry()
+		/*builder.Services.AddOpenTelemetry()
 			.ConfigureResource((ResourceBuilder resource) => resource.AddService(builder.Environment.ApplicationName))
 			.WithLogging(static (LoggerProviderBuilder logging) =>
 			{
@@ -72,7 +74,7 @@ public static class MauiProgram
 			.WithTracing(static (TracerProviderBuilder tracing) =>
 			{
 				tracing.AddConsoleExporter();
-			});
+			});*/
 
 		return builder.Build();
 	}

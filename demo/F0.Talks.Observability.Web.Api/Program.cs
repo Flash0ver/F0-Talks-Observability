@@ -14,6 +14,8 @@ builder.WebHost.UseSentry(static (SentryAspNetCoreOptions options) =>
 	options.EnableMetrics = true;
 });
 
+builder.AddServiceDefaults();
+
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
 	options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
@@ -27,6 +29,8 @@ builder.Services.AddHostedService<MetricsService>();
 builder.Services.AddHostedService<DatabaseService>();
 
 WebApplication app = builder.Build();
+
+app.MapDefaultEndpoints();
 
 if (app.Environment.IsDevelopment())
 {

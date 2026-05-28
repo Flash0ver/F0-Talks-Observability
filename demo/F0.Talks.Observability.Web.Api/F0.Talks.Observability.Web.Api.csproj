@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\F0.Talks.Observability.Aspire.ServiceDefaults\F0.Talks.Observability.Aspire.ServiceDefaults.csproj" />
     <ProjectReference Include="..\F0.Talks.Observability.Data\F0.Talks.Observability.Data.csproj" />
   </ItemGroup>
 

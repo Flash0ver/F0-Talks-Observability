@@ -1,4 +1,7 @@
 <Solution>
+  <Project Path="F0.Talks.Observability.Aspire.AppHost/F0.Talks.Observability.Aspire.AppHost.csproj" />
+  <Project Path="F0.Talks.Observability.Aspire.ServiceDefaults.Maui/F0.Talks.Observability.Aspire.ServiceDefaults.Maui.csproj" />
+  <Project Path="F0.Talks.Observability.Aspire.ServiceDefaults/F0.Talks.Observability.Aspire.ServiceDefaults.csproj" />
   <Project Path="F0.Talks.Observability.Benchmarks/F0.Talks.Observability.Benchmarks.csproj" />
   <Project Path="F0.Talks.Observability.Data/F0.Talks.Observability.Data.csproj" />
   <Project Path="F0.Talks.Observability.Maui.App/F0.Talks.Observability.Maui.App.csproj" />
