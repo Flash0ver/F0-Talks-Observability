@@ -27,7 +27,7 @@ file static class Router
 		todosApi.MapGet("/", async Task<Todo[]> (HttpRequest request, [FromServices] TaskListContextFactory dbFactory) =>
 			{
 				await Tracer.WaitAsync();
-
+				AppMetrics.Request(request);
 				app.Logger.Request(request);
 
 				await using TaskListContext dbContext = dbFactory.CreateDbContext();
@@ -38,7 +38,7 @@ file static class Router
 		todosApi.MapGet("/complete", async Task<Todo[]> (HttpRequest request, [FromServices] TaskListContextFactory dbFactory) =>
 			{
 				await Tracer.WaitAsync();
-
+				AppMetrics.Request(request);
 				app.Logger.Request(request);
 
 				await using TaskListContext dbContext = dbFactory.CreateDbContext();
@@ -49,7 +49,7 @@ file static class Router
 		todosApi.MapGet("/{id}", async Task<Results<Ok<Todo>, NotFound>> (HttpRequest request, [FromRoute] int id, [FromServices] TaskListContextFactory dbFactory) =>
 			{
 				await Tracer.WaitAsync();
-
+				AppMetrics.Request(request);
 				app.Logger.Request(request);
 
 				await using TaskListContext dbContext = dbFactory.CreateDbContext();
@@ -62,7 +62,7 @@ file static class Router
 		todosApi.MapPost("/", async Task<Created<Todo>> (HttpRequest request, [FromBody] Todo todo, [FromServices] TaskListContextFactory dbFactory) =>
 			{
 				await Tracer.WaitAsync();
-
+				AppMetrics.Request(request);
 				app.Logger.Request(request);
 
 				await using TaskListContext dbContext = dbFactory.CreateDbContext();
@@ -77,7 +77,7 @@ file static class Router
 		todosApi.MapPut("/{id}", async Task<Results<NoContent, NotFound>> (HttpRequest request, [FromRoute] int id, [FromBody] Todo todo, [FromServices] TaskListContextFactory dbFactory) =>
 			{
 				await Tracer.WaitAsync();
-
+				AppMetrics.Request(request);
 				app.Logger.Request(request);
 
 				await using TaskListContext dbContext = dbFactory.CreateDbContext();
@@ -97,7 +97,7 @@ file static class Router
 		todosApi.MapPatch("/{id}", async Task<Results<NoContent, NotFound>> (HttpRequest request, [FromRoute] int id, [FromBody] Todo todo, [FromServices] TaskListContextFactory dbFactory) =>
 			{
 				await Tracer.WaitAsync();
-
+				AppMetrics.Request(request);
 				app.Logger.Request(request);
 
 				await using TaskListContext dbContext = dbFactory.CreateDbContext();
@@ -126,7 +126,7 @@ file static class Router
 		todosApi.MapDelete("/{id}", async Task<Results<NoContent, NotFound>> (HttpRequest request, [FromRoute] int id, [FromServices] TaskListContextFactory dbFactory) =>
 			{
 				await Tracer.WaitAsync();
-
+				AppMetrics.Request(request);
 				app.Logger.Request(request);
 
 				await using TaskListContext dbContext = dbFactory.CreateDbContext();
