@@ -12,6 +12,8 @@ public class TagListBenchmarks
 	private Counter<int> _instrument = null!;
 	private KeyValuePair<string, object?>[] _measurement = null!;
 
+	private TagList _tagList;
+
 	[GlobalSetup]
 	public void Setup()
 	{
@@ -20,6 +22,12 @@ public class TagListBenchmarks
 		_instrument = _meter.CreateCounter<int>("benchmark.instrument", "unit", "Description.",
 			[KeyValuePair.Create<string, object?>("instrument.key", "instrument-value")]);
 		_measurement = [KeyValuePair.Create<string, object?>("measurement.key", "measurement-value")];
+
+		_tagList = new TagList
+		{
+			{ "key.one", "value-1" },
+			{ "key.two", "value-2" },
+		};
 	}
 
 	[GlobalCleanup]
@@ -29,6 +37,9 @@ public class TagListBenchmarks
 
 		CreateTagList_ForEach_Add().AssertCount(3);
 		CreateTagList_CollectionExpression_SpreadElement().AssertCount(3);
+
+		IterateTagList_Enumerator().AssertEquals(new KeyValuePair<string, object?>("key.two", "value-2"));
+		IterateTagList_Indexer().AssertEquals(new KeyValuePair<string, object?>("key.two", "value-2"));
 	}
 
 	[Benchmark]
@@ -77,5 +88,32 @@ public class TagListBenchmarks
 		];
 
 		return tagList;
+	}
+
+	[Benchmark]
+	public KeyValuePair<string, object?> IterateTagList_Enumerator()
+	{
+		KeyValuePair<string, object?> last = default;
+
+		foreach (KeyValuePair<string, object?> tag in _tagList)
+		{
+			last = tag;
+		}
+
+		return last;
+	}
+
+	[Benchmark]
+	public KeyValuePair<string, object?> IterateTagList_Indexer()
+	{
+		KeyValuePair<string, object?> last = default;
+
+		for (int index = 0; index < _tagList.Count; index++)
+		{
+			KeyValuePair<string, object?> tag = _tagList[index];
+			last = tag;
+		}
+
+		return last;
 	}
 }
